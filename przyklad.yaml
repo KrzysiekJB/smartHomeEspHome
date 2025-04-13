@@ -404,14 +404,14 @@ sensor:
     model: DHT11
     update_interval: 60s
 
-  # - platform: template
-  #   name: "Pozycja rolety z EEPROM"
-  #   id: roleta_position_eeprom
-  #   unit_of_measurement: "%"
-  #   accuracy_decimals: 1
-  #   lambda: |-
-  #     return id(eeprom_storage).read_position(0) * 100.0;
-  #   update_interval: 60s
+  - platform: template
+    name: "Pozycja rolety z EEPROM"
+    id: roleta_position_eeprom
+    unit_of_measurement: "%"
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(0) * 100.0;
+    update_interval: 60s
 
 binary_sensor:
   # - platform: gpio

@@ -1,0 +1,384 @@
+  - platform: gpio
+    name: Roleta salon taras UP
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_1}
+      mode: OUTPUT
+    id: relay_salon_taras_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_salon_taras_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta salon taras DOWN
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_2}
+      mode: OUTPUT
+    id: relay_salon_taras_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_salon_taras_up
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta salon FIX UP
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_3}
+      mode: OUTPUT
+    id: relay_salon_FIX_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_salon_FIX_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta salon FIX DOWN
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_4}
+      mode: OUTPUT
+    id: relay_salon_FIX_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_salon_FIX_up
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta salon od sąsiada UP
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_5}
+      mode: OUTPUT
+    id: relay_salon_od_sasiada_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_salon_od_sasiada_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta salon od sąsiada DOWN
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_6}
+      mode: OUTPUT
+    id: relay_salon_od_sasiada_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_salon_od_sasiada_up
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta jadalnia UP
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_7}
+      mode: OUTPUT
+    id: relay_jadalnia_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_jadalnia_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta jadalnia DOWN
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_8}
+      mode: OUTPUT
+    id: relay_jadalnia_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_jadalnia_up
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta kuchnia wyjście na taras UP
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_9}
+      mode: OUTPUT
+    id: relay_kuchnia_wyjscie_na_taras_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_kuchnia_wyjscie_na_taras_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta kuchnia wyjście na taras DOWN
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_10}
+      mode: OUTPUT
+    id: relay_kuchnia_wyjscie_na_taras_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_kuchnia_wyjscie_na_taras_up
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta kuchnia okno UP
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_11}
+      mode: OUTPUT
+    id: relay_kuchnia_okno_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_kuchnia_okno_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta kuchnia okno DOWN
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_12}
+      mode: OUTPUT
+    id: relay_kuchnia_okno_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_kuchnia_okno_up
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta gabinet parter okno lewe UP
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_13}
+      mode: OUTPUT
+    id: relay_gabinet_parter_okno_lewe_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_gabinet_parter_okno_lewe_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta gabinet parter okno lewe DOWN
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_14}
+      mode: OUTPUT
+    id: relay_gabinet_parter_okno_lewe_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_gabinet_parter_okno_lewe_up
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta gabinet parter okno prawe UP
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_15}
+      mode: OUTPUT
+    id: relay_gabinet_parter_okno_prawe_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_gabinet_parter_okno_prawe_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta gabinet parter okno prawe DOWN
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_16}
+      mode: OUTPUT
+    id: relay_gabinet_parter_okno_prawe_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_gabinet_parter_okno_prawe_up
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta garaż UP
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_17}
+      mode: OUTPUT
+    id: relay_garaz_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_garaz_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta garaż DOWN
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_18}
+      mode: OUTPUT
+    id: relay_garaz_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_garaz_up
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta pokój od sąsiada UP
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_19}
+      mode: OUTPUT
+    id: relay_pokoj_od_sasiada_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_pokoj_od_sasiada_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta pokój od sąsiada DOWN
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_20}
+      mode: OUTPUT
+    id: relay_pokoj_od_sasiada_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_pokoj_od_sasiada_up
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta kacperek okno lewe UP
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_21}
+      mode: OUTPUT
+    id: relay_kacperek_okno_lewe_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_kacperek_okno_lewe_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta kacperek okno lewe DOWN
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_22}
+      mode: OUTPUT
+    id: relay_kacperek_okno_lewe_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_kacperek_okno_lewe_up
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta kacperek okno prawe UP
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_23}
+      mode: OUTPUT
+    id: relay_kacperek_okno_prawe_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_kacperek_okno_prawe_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta kacperek okno prawe DOWN
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_24}
+      mode: OUTPUT
+    id: relay_kacperek_okno_prawe_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_kacperek_okno_prawe_up
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta sypialnia prawa UP
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_25}
+      mode: OUTPUT
+    id: relay_sypialnia_prawa_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_sypialnia_prawa_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta sypialnia prawa DOWN
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_26}
+      mode: OUTPUT
+    id: relay_sypialnia_prawa_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_sypialnia_prawa_up
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta sypialnia lewa UP
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_27}
+      mode: OUTPUT
+    id: relay_sypialnia_lewa_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_sypialnia_lewa_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta sypialnia lewa DOWN
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_28}
+      mode: OUTPUT
+    id: relay_sypialnia_lewa_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_sypialnia_lewa_up
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta garderoba sypialnia UP
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_29}
+      mode: OUTPUT
+    id: relay_garderoba_sypialnia_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_garderoba_sypialnia_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta garderoba sypialnia DOWN
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_30}
+      mode: OUTPUT
+    id: relay_garderoba_sypialnia_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_garderoba_sypialnia_up
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta korytarz UP
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_31}
+      mode: OUTPUT
+    id: relay_korytarz_up
+    inverted: true
+    internal: false
+    interlock:
+      - relay_korytarz_down
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    name: Roleta korytarz DOWN
+    pin:
+      mcp23xxx: mcp23017_out_2_32
+      number: ${OUT_RJ45_32}
+      mode: OUTPUT
+    id: relay_korytarz_down
+    inverted: true
+    internal: false
+    interlock:
+      - relay_korytarz_up
+    restore_mode: ALWAYS_OFF

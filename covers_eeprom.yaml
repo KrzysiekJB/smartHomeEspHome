@@ -1,0 +1,128 @@
+  - platform: template
+    name: Pozycja rolety salon taras z EEPROM
+    id: roleta_position_salon_taras_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(0) * 100.0;
+    update_interval: 60s
+  - platform: template
+    name: Pozycja rolety salon FIX z EEPROM
+    id: roleta_position_salon_FIX_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(1) * 100.0;
+    update_interval: 60s
+  - platform: template
+    name: Pozycja rolety salon od sąsiada z EEPROM
+    id: roleta_position_salon_od_sasiada_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(2) * 100.0;
+    update_interval: 60s
+  - platform: template
+    name: Pozycja rolety jadalnia z EEPROM
+    id: roleta_position_jadalnia_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(3) * 100.0;
+    update_interval: 60s
+  - platform: template
+    name: Pozycja rolety kuchnia wyjście na taras z EEPROM
+    id: roleta_position_kuchnia_wyjscie_na_taras_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(4) * 100.0;
+    update_interval: 60s
+  - platform: template
+    name: Pozycja rolety kuchnia okno z EEPROM
+    id: roleta_position_kuchnia_okno_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(5) * 100.0;
+    update_interval: 60s
+  - platform: template
+    name: Pozycja rolety gabinet parter okno lewe z EEPROM
+    id: roleta_position_gabinet_parter_okno_lewe_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(6) * 100.0;
+    update_interval: 60s
+  - platform: template
+    name: Pozycja rolety gabinet parter okno prawe z EEPROM
+    id: roleta_position_gabinet_parter_okno_prawe_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(7) * 100.0;
+    update_interval: 60s
+  - platform: template
+    name: Pozycja rolety garaż z EEPROM
+    id: roleta_position_garaz_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(8) * 100.0;
+    update_interval: 60s
+  - platform: template
+    name: Pozycja rolety pokój od sąsiada z EEPROM
+    id: roleta_position_pokoj_od_sasiada_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(9) * 100.0;
+    update_interval: 60s
+  - platform: template
+    name: Pozycja rolety kacperek okno lewe z EEPROM
+    id: roleta_position_kacperek_okno_lewe_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(10) * 100.0;
+    update_interval: 60s
+  - platform: template
+    name: Pozycja rolety kacperek okno prawe z EEPROM
+    id: roleta_position_kacperek_okno_prawe_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(11) * 100.0;
+    update_interval: 60s
+  - platform: template
+    name: Pozycja rolety sypialnia prawa z EEPROM
+    id: roleta_position_sypialnia_prawa_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(12) * 100.0;
+    update_interval: 60s
+  - platform: template
+    name: Pozycja rolety sypialnia lewa z EEPROM
+    id: roleta_position_sypialnia_lewa_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(13) * 100.0;
+    update_interval: 60s
+  - platform: template
+    name: Pozycja rolety garderoba sypialnia z EEPROM
+    id: roleta_position_garderoba_sypialnia_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(14) * 100.0;
+    update_interval: 60s
+  - platform: template
+    name: Pozycja rolety korytarz z EEPROM
+    id: roleta_position_korytarz_eeprom
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    lambda: |-
+      return id(eeprom_storage).read_position(15) * 100.0;
+    update_interval: 60s

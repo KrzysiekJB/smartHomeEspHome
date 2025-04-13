@@ -71,10 +71,6 @@ substitutions:
   OUT_RJ45_31: "14"
   OUT_RJ45_32: "15"
 
-  rooms_name: "salon taras, salon FIX, salon od sąsiada, jadalnia, kuchnia wyjście na taras, kuchnia okno, gabinet parter okno lewe, gabinet parter okno prawe, garaż, pokój od sąsiada, kacperek okno lewe, kacperek okno prawe, sypialnia prawa, sypialnia lewa, garderoba sypialnia, korytarz"
-  rooms_id:   "salon_taras, salon_fix, salon_od_sasiada, jadalnia, kuchnia_wyjscie_na_taras, kuchnia_okno, gabinet_parter_okno_lewe, gabinet_parter_okno_prawe, garaz, pokoj_od_sasiada, kacperek_okno_lewe, kacperek_okno_prawe, sypialnia_prawa, sypialnia_lewa, garderoba_sypialnia, korytarz"
-  blind_count: "8"
-
   # serial_prefix: esp #Don't change it.
 
 esphome:
@@ -128,11 +124,11 @@ i2c:
   scan: true
 
 # Załadowanie biblioteki dla EEPROM AT24C256
-# external_components:
-#   - source: my_components
+external_components:
+  - source: my_components
   
-# at24c256_eeprom:
-#   id: eeprom_storage
+at24c256_eeprom:
+  id: eeprom_storage
 
 # Definicja czcionek
 font:
@@ -149,6 +145,10 @@ mcp23017:
     address: 0x20
   - id: 'mcp23017_out_1_16'
     address: 0x21
+  - id: 'mcp23017_in_2_32'
+    address: 0x22
+  - id: 'mcp23017_out_2_32'
+    address: 0x23
 
 # Obsługa wyświetlacza
 display:
@@ -159,18 +159,6 @@ display:
     update_interval: 1000ms # Aktualizacja co sekundę
     lambda: |-
       it.printf(0, 0, id(font_small), "IP: %s", id(ip_address).state.c_str());
-      //it.printf(0, 10, id(font_small), "WiFi: %d dBm (%.0f%%)", 
-      //          (int)id(wifi_signal_db).state, 
-      //          id(wifi_signal_percent).state);
-      //int switches_on = 0;
-      //for (auto *sw : App.get_switches()) {
-      //  if (sw->state) {
-      //    switches_on++;
-      //  }
-      //}
-      //it.printf(0, 20, id(font_small), "Pozycja rolety: %.1f%%", id(cover1).position * 100);
-      //it.printf(0, 20, id(font_small), "L: %d ON, S: %d ON", lights_on, switches_on);
-      
 
 text_sensor:
   - platform: wifi_info
@@ -178,52 +166,14 @@ text_sensor:
       name: "IP Address"
       id: ip_address
 
+sensor:
+  # Import sensorów przechowujących pozycję rolety
+  !include includes/covers_eeprom.yaml
+
 switch:
-  - platform: gpio
-    name: Roleta salon taras UP
-    pin:
-      mcp23xxx: mcp23017_out_1_16
-      number: ${OUT_RJ45_1}
-      mode: OUTPUT
-    id: relay_salon_taras_up
-    inverted: true
-    internal: false
-    interlock:
-    - relay_salon_taras_down
-    restore_mode: ALWAYS_OFF
-  - platform: gpio
-    name: Roleta salon taras DOWN
-    pin:
-      mcp23xxx: mcp23017_out_1_16
-      number: ${OUT_RJ45_2}
-      mode: OUTPUT
-    id: relay_salon_taras_down
-    inverted: true
-    internal: false
-    interlock:
-    - relay_salon_taras_up
-    restore_mode: ALWAYS_OFF
-  - platform: gpio
-    name: Roleta salon FIX UP
-    pin:
-      mcp23xxx: mcp23017_out_1_16
-      number: ${OUT_RJ45_3}
-      mode: OUTPUT
-    id: relay_salon_FIX_up
-    inverted: true
-    internal: false
-    interlock:
-    - relay_salon_FIX_down
-    restore_mode: ALWAYS_OFF
-  - platform: gpio
-    name: Roleta salon FIX DOWN
-    pin:
-      mcp23xxx: mcp23017_out_1_16
-      number: ${OUT_RJ45_4}
-      mode: OUTPUT
-    id: relay_salon_FIX_down
-    inverted: true
-    internal: false
-    interlock:
-    - relay_salon_FIX_up
-    restore_mode: ALWAYS_OFF
+  # Import przełączników
+  !include includes/switches_blinds.yaml
+
+cover:
+  # Import rolet
+  # !include includes/covers.yaml
