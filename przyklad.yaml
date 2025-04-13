@@ -716,17 +716,17 @@ light:
   #     - switch.turn_off: relay_timed
   
   # # Konfiguracja przekaźnika dla podnoszenia rolety
-  # - platform: gpio
-  #   name: "Rolety Gora"
-  #   pin: 
-  #     mcp23xxx: mcp23017_out  # Używamy ekspandera MCP23017
-  #     number: ${OUT_RJ45_3_5}       # Numer pinu na ekspanderze (zdefiniowany w substitutions)
-  #     mode: OUTPUT              # Pin ustawiony jako wyjście
-  #   id: relay_up                # Unikalny identyfikator tego przełącznika
-  #   inverted: True              # Odwrócona logika (True = przekaźnik wyłączony)
-  #   internal: True              # Przełącznik nie będzie widoczny w Home Assistant
-  #   interlock: [relay_down]     # Zapobiega jednoczesnej aktywacji z relay_down
-  #   restore_mode: ALWAYS_OFF    # Zawsze wyłącz po restarcie dla bezpieczeństwa
+  - platform: gpio
+    name: "Rolety Gora"
+    pin: 
+      mcp23xxx: mcp23017_out  # Używamy ekspandera MCP23017
+      number: ${OUT_RJ45_3_5}       # Numer pinu na ekspanderze (zdefiniowany w substitutions)
+      mode: OUTPUT              # Pin ustawiony jako wyjście
+    id: relay_up                # Unikalny identyfikator tego przełącznika
+    inverted: True              # Odwrócona logika (True = przekaźnik wyłączony)
+    internal: True              # Przełącznik nie będzie widoczny w Home Assistant
+    interlock: [relay_down]     # Zapobiega jednoczesnej aktywacji z relay_down
+    restore_mode: ALWAYS_OFF    # Zawsze wyłącz po restarcie dla bezpieczeństwa
 
   # # Konfiguracja przekaźnika dla opuszczania rolety
   # - platform: gpio
@@ -754,30 +754,30 @@ light:
   #     inverted: True
   #   id: living_room_floor
 
-# cover:
-#   - platform: time_based
-#     name: "Roleta 1"
-#     id: cover1
-#     open_action:
-#       - switch.turn_on: relay_up
-#       - lambda: |-
-#           id(eeprom_storage).update_position(0, 1.0);
-#           id(roleta_position_eeprom).publish_state(100.0);
-#     open_duration: 10s
-#     close_action:
-#       - switch.turn_on: relay_down
-#       - lambda: |-
-#           id(eeprom_storage).update_position(0, 0.0);
-#           id(roleta_position_eeprom).publish_state(0.0);
-#     close_duration: 8s
-#     stop_action:
-#       - switch.turn_off: relay_up
-#       - switch.turn_off: relay_down
-#       - lambda: |-
-#           float current_position = id(cover1).position;
-#           id(eeprom_storage).update_position(0, current_position);
-#           id(roleta_position_eeprom).publish_state(current_position * 100.0);
-#     assumed_state: False
+cover:
+  - platform: time_based
+    name: "Roleta 1"
+    id: cover1
+    open_action:
+      - switch.turn_on: relay_up
+      - lambda: |-
+          id(eeprom_storage).update_position(0, 1.0);
+          id(roleta_position_eeprom).publish_state(100.0);
+    open_duration: 10s
+    close_action:
+      - switch.turn_on: relay_down
+      - lambda: |-
+          id(eeprom_storage).update_position(0, 0.0);
+          id(roleta_position_eeprom).publish_state(0.0);
+    close_duration: 8s
+    stop_action:
+      - switch.turn_off: relay_up
+      - switch.turn_off: relay_down
+      - lambda: |-
+          float current_position = id(cover1).position;
+          id(eeprom_storage).update_position(0, current_position);
+          id(roleta_position_eeprom).publish_state(current_position * 100.0);
+    assumed_state: False
 
 
 # climate:

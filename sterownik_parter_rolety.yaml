@@ -1,0 +1,677 @@
+substitutions:
+  IN_RJ45_1: "7"
+  IN_RJ45_2: "6"
+  IN_RJ45_3: "5"
+  IN_RJ45_4: "4"
+  IN_RJ45_5: "3"
+  IN_RJ45_6: "2"
+  IN_RJ45_7: "1"
+  IN_RJ45_8: "0"
+
+  IN_RJ45_9: "8"
+  IN_RJ45_10: "9"
+  IN_RJ45_11: "10"
+  IN_RJ45_12: "11"
+  IN_RJ45_13: "12"
+  IN_RJ45_14: "13"
+  IN_RJ45_15: "14"
+  IN_RJ45_16: "15"
+
+  IN_RJ45_17: "7"
+  IN_RJ45_18: "6"
+  IN_RJ45_19: "5"
+  IN_RJ45_20: "4"
+  IN_RJ45_21: "3"
+  IN_RJ45_22: "2"
+  IN_RJ45_23: "1"
+  IN_RJ45_24: "0"
+
+  IN_RJ45_25: "8"
+  IN_RJ45_26: "9"
+  IN_RJ45_27: "10"
+  IN_RJ45_28: "11"
+  IN_RJ45_29: "12"
+  IN_RJ45_30: "13"
+  IN_RJ45_31: "14"
+  IN_RJ45_32: "15"
+
+  OUT_RJ45_1: "7"
+  OUT_RJ45_2: "6"
+  OUT_RJ45_3: "5"
+  OUT_RJ45_4: "4"
+  OUT_RJ45_5: "3"
+  OUT_RJ45_6: "2"
+  OUT_RJ45_7: "1"
+  OUT_RJ45_8: "0"
+
+  OUT_RJ45_9: "8"
+  OUT_RJ45_10: "9"
+  OUT_RJ45_11: "10"
+  OUT_RJ45_12: "11"
+  OUT_RJ45_13: "12"
+  OUT_RJ45_14: "13"
+  OUT_RJ45_15: "14"
+  OUT_RJ45_16: "15"
+
+  OUT_RJ45_17: "7"
+  OUT_RJ45_18: "6"
+  OUT_RJ45_19: "5"
+  OUT_RJ45_20: "4"
+  OUT_RJ45_21: "3"
+  OUT_RJ45_22: "2"
+  OUT_RJ45_23: "1"
+  OUT_RJ45_24: "0"
+
+  OUT_RJ45_25: "8"
+  OUT_RJ45_26: "9"
+  OUT_RJ45_27: "10"
+  OUT_RJ45_28: "11"
+  OUT_RJ45_29: "12"
+  OUT_RJ45_30: "13"
+  OUT_RJ45_31: "14"
+  OUT_RJ45_32: "15"
+
+  gpio_1: "GPIO12"
+
+  # serial_prefix: esp #Don't change it.
+
+esphome:
+  name: krishomelight
+  friendly_name: KrisHomeLight
+  libraries:
+    - EEPROM
+  # on_boot:
+  #   priority: -100
+  #   then:
+  #     - delay: 5s
+  #     - lambda: |-
+  #         float stored_position = id(eeprom_storage).read_position(0);
+  #         id(cover1).position = stored_position;
+
+esp8266:
+  board: esp01_1m
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "BEqOF0qtQfbC6LIhC9nV/pkj7dXO4x3FLfaEZNDS6WY="
+
+ota:
+  - platform: esphome
+    password: "e2789d68b00c626967b9b7a784bce4a2"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Krishomelight Fallback Hotspot"
+    password: "Lf8ri3xZq7OX"
+
+captive_portal:
+
+# ******************
+# Moja konfiguracja
+# ******************
+
+# Konfiguracja I2C
+i2c:
+  sda: GPIO4  # D2 na płytce
+  scl: GPIO5  # D1 na płytce
+  frequency: 400kHz
+  scan: true
+
+# Załadowanie biblioteki dla EEPROM AT24C256
+# external_components:
+#   - source: my_components
+  
+# at24c256_eeprom:
+#   id: eeprom_storage
+
+# Definicja czcionek
+font:
+  - file: 'arial.ttf'
+    id: font_small
+    size: 10
+  - file: 'arial.ttf'
+    id: font_large
+    size: 16
+
+# MCP23017
+mcp23017:
+  - id: 'mcp23017_in_1_16'
+    address: 0x20
+  - id: 'mcp23017_out_1_16'
+    address: 0x21
+
+
+# display: !include includes/display.yaml
+# sensor: !include includes/sensors.yaml
+# text_sensor: !include includes/text_sensors.yaml
+# output: !include includes/outputs.yaml
+# light: !include includes/lights.yaml
+# switch: !include includes/switches.yaml
+# binary_sensor: !include includes/binary_sensors.yaml
+# cover: !include includes/covers.yaml
+
+# Obsługa wyświetlacza
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 128x32"
+    reset_pin: GPIO2
+    address: 0x3C
+    update_interval: 1000ms # Aktualizacja co sekundę
+    lambda: |-
+      it.printf(0, 0, id(font_small), "IP: %s", id(ip_address).state.c_str());
+      it.printf(0, 10, id(font_small), "WiFi: %d dBm (%.0f%%)", 
+                (int)id(wifi_signal_db).state, 
+                id(wifi_signal_percent).state);
+      //int switches_on = 0;
+      //for (auto *sw : App.get_switches()) {
+      //  if (sw->state) {
+      //    switches_on++;
+      //  }
+      //}
+      //it.printf(0, 20, id(font_small), "Pozycja rolety: %.1f%%", id(cover1).position * 100);
+      //it.printf(0, 20, id(font_small), "L: %d ON, S: %d ON", lights_on, switches_on);
+      
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: "IP Address"
+      id: ip_address
+
+output:
+  # Przekaźniki out 1-8
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_1}
+    id: relay_1
+    name: "Relay 1"
+
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_2}
+    id: relay_2
+
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_3}
+    id: relay_3
+
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_4}
+    id: relay_4
+
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_5}
+    id: relay_5
+
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_6}
+    id: relay_6
+
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_7}
+    id: relay_7
+
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_8}
+    id: relay_8
+
+# Przekaźniki out 9-16
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_9}
+    id: relay_9
+
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_10}
+    id: relay_10
+
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_11}
+    id: relay_11
+
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_12}
+    id: relay_12
+
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_13}
+    id: relay_13
+
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_14}
+    id: relay_14
+
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_15}
+    id: relay_15
+
+  - platform: gpio
+    pin:
+      mcp23xxx: mcp23017_out_1_16
+      number: ${OUT_RJ45_16}
+    id: relay_16
+
+# # Przekaźniki 17-24
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_17}
+#     id: relay_17
+
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_18}
+#     id: relay_18
+
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_19}
+#     id: relay_19
+
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_20}
+#     id: relay_20
+
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_21}
+#     id: relay_21
+
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_22}
+#     id: relay_22
+
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_23}
+#     id: relay_23
+
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_24}
+#     id: relay_24
+
+# # Przekaźniki 25-32
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_25}
+#     id: relay_25
+
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_26}
+#     id: relay_26
+
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_27}
+#     id: relay_27
+
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_28}
+#     id: relay_28
+
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_29}
+#     id: relay_29
+
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_30}
+#     id: relay_30
+
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_31}
+#     id: relay_31
+
+#   - platform: gpio
+#     pin:
+#       mcp23xxx: mcp23017_out_2
+#       number: ${OUT_RJ45_32}
+#     id: relay_32
+
+sensor:
+  - platform: wifi_signal
+    name: "Siła sygnału WiFi"
+    update_interval: 60s
+    id: wifi_signal_db
+
+  - platform: copy
+    source_id: wifi_signal_db
+    id: wifi_signal_percent
+    name: "Siła sygnału WiFi %"
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+
+  - platform: dht
+    pin: GPIO14
+    temperature:
+      name: "Temperatura DTH11"
+      id: dth11_temp_1  # ID dla sensora temperatury
+    humidity:
+      name: "Wilgotność DTH11"
+      id: dth11_hum_1     # ID dla sensora wilgotności
+    model: DHT11
+    update_interval: 60s
+
+  # - platform: template
+  #   name: "Pozycja rolety z EEPROM"
+  #   id: roleta_position_eeprom
+  #   unit_of_measurement: "%"
+  #   accuracy_decimals: 1
+  #   lambda: |-
+  #     return id(eeprom_storage).read_position(0) * 100.0;
+  #   update_interval: 60s
+
+binary_sensor:
+  - platform: gpio
+    name: "Switch 1"
+    pin:
+      mcp23xxx: mcp23017_in_1_16
+      number: ${IN_RJ45_1}
+      mode: INPUT_PULLUP
+    filters:
+      - invert:
+    on_press:
+      then:
+        - light.toggle: light_1
+
+  - platform: gpio
+    name: "Switch 2"
+    pin:
+      mcp23xxx: mcp23017_in_1_16
+      number: ${IN_RJ45_2}
+      mode: INPUT_PULLUP
+    filters:
+      - invert:
+    on_press:
+      then:
+        - light.toggle: light_2
+
+  - platform: gpio
+    name: "Switch 3"
+    pin:
+      mcp23xxx: mcp23017_in_1_16
+      number: ${IN_RJ45_3}
+      mode: INPUT_PULLUP
+    filters:
+      - invert:
+    on_press:
+      then:
+        - light.toggle: light_3
+
+  - platform: gpio
+    name: "Switch 4"
+    pin:
+      mcp23xxx: mcp23017_in_1_16
+      number: ${IN_RJ45_4}
+      mode: INPUT_PULLUP
+    filters:
+      - invert:
+    on_press:
+      then:
+        - light.toggle: light_4
+
+  - platform: gpio
+    name: "Switch 5"
+    pin:
+      mcp23xxx: mcp23017_in_1_16
+      number: ${IN_RJ45_5}
+      mode: INPUT_PULLUP
+    filters:
+      - invert:
+    on_press:
+      then:
+        - light.toggle: light_5
+
+  - platform: gpio
+    name: "Switch 6"
+    pin:
+      mcp23xxx: mcp23017_in_1_16
+      number: ${IN_RJ45_6}
+      mode: INPUT_PULLUP
+    filters:
+      - invert:
+    on_press:
+      then:
+        - light.toggle: light_6
+
+  - platform: gpio
+    name: "Switch 7"
+    pin:
+      mcp23xxx: mcp23017_in_1_16
+      number: ${IN_RJ45_7}
+      mode: INPUT_PULLUP
+    filters:
+      - invert:
+    on_press:
+      then:
+        - light.toggle: light_7
+
+  - platform: gpio
+    name: "Switch 8"
+    pin:
+      mcp23xxx: mcp23017_in_1_16
+      number: ${IN_RJ45_8}
+      mode: INPUT_PULLUP
+    filters:
+      - invert:
+    on_press:
+      then:
+        - light.toggle: light_8
+
+light:
+  - platform: binary
+    name: "Light 01"
+    output: relay_1
+    id: light_1
+
+  - platform: binary
+    name: "Light 02"
+    output: relay_2
+    id: light_2
+
+  - platform: binary
+    name: "Light 03"
+    output: relay_3
+    id: light_3
+
+  - platform: binary
+    name: "Light 04"
+    output: relay_4
+    id: light_4
+
+  - platform: binary
+    name: "Light 05"
+    output: relay_5
+    id: light_5
+
+  - platform: binary
+    name: "Light 06"
+    output: relay_6
+    id: light_6
+
+  - platform: binary
+    name: "Light 07"
+    output: relay_7
+    id: light_7
+
+  - platform: binary
+    name: "Light 08"
+    output: relay_8
+    id: light_8
+
+  # - platform: binary
+  #   name: "Light 09"
+  #   output: relay_9
+  #   id: light_9
+
+  # - platform: binary
+  #   name: "Light 10"
+  #   output: relay_10
+  #   id: light_10
+
+  # - platform: binary
+  #   name: "Light 11"
+  #   output: relay_11
+  #   id: light_11
+
+  # - platform: binary
+  #   name: "Light 12"
+  #   output: relay_12
+  #   id: light_12
+
+  # - platform: binary
+  #   name: "Light 13"
+  #   output: relay_13
+  #   id: light_13
+
+  # - platform: binary
+  #   name: "Light 14"
+  #   output: relay_14
+  #   id: light_14
+
+  # - platform: binary
+  #   name: "Light 15"
+  #   output: relay_15
+  #   id: light_15
+
+  # - platform: binary
+  #   name: "Light 16"
+  #   output: relay_16
+  #   id: light_16
+    
+  # - platform: binary
+  #   name: "Light 17"
+  #   output: relay_17
+  #   id: light_17
+
+  # - platform: binary
+  #   name: "Light 18"
+  #   output: relay_18
+  #   id: light_18
+
+  # - platform: binary
+  #   name: "Light 19"
+  #   output: relay_19
+  #   id: light_19
+
+  # - platform: binary
+  #   name: "Light 20"
+  #   output: relay_20
+  #   id: light_20
+
+  # - platform: binary
+  #   name: "Light 21"
+  #   output: relay_21
+  #   id: light_21
+
+  # - platform: binary
+  #   name: "Light 22"
+  #   output: relay_22
+  #   id: light_22
+
+  # - platform: binary
+  #   name: "Light 23"
+  #   output: relay_23
+  #   id: light_23
+
+  # - platform: binary
+  #   name: "Light 24"
+  #   output: relay_24
+  #   id: light_24
+
+  # - platform: binary
+  #   name: "Light 25"
+  #   output: relay_25
+  #   id: light_25
+
+  # - platform: binary
+  #   name: "Light 26"
+  #   output: relay_26
+  #   id: light_26
+
+  # - platform: binary
+  #   name: "Light 27"
+  #   output: relay_27
+  #   id: light_27
+
+  # - platform: binary
+  #   name: "Light 28"
+  #   output: relay_28
+  #   id: light_28
+
+  # - platform: binary
+  #   name: "Light 29"
+  #   output: relay_29
+  #   id: light_29
+
+  # - platform: binary
+  #   name: "Light 30"
+  #   output: relay_30
+  #   id: light_30
+
+  # - platform: binary
+  #   name: "Light 31"
+  #   output: relay_31
+  #   id: light_31
+
+  # - platform: binary
+  #   name: "Light 32"
+  #   output: relay_32
+  #   id: light_32
