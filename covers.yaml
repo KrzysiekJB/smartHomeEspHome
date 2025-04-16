@@ -3,366 +3,478 @@
     id: cover_salon_taras
     open_action:
       - switch.turn_on: relay_salon_taras_up
-      - lambda: |-
-          id(eeprom_storage).update_position(0, 1.0);
-          id(roleta_position_salon_taras_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_salon_taras_down
-      - lambda: |-
-          id(eeprom_storage).update_position(0, 0.0);
-          id(roleta_position_salon_taras_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_salon_taras_up
       - switch.turn_off: relay_salon_taras_down
       - lambda: |-
-          float current_position = id(cover_salon_taras).position;
-          id(eeprom_storage).update_position(0, current_position);
-          id(roleta_position_salon_taras_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_salon_taras).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 0;
+          ESP_LOGD("cover_save", "Roleta salon taras zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false
   - platform: time_based
     name: Roleta salon FIX
     id: cover_salon_FIX
     open_action:
       - switch.turn_on: relay_salon_FIX_up
-      - lambda: |-
-          id(eeprom_storage).update_position(1, 1.0);
-          id(roleta_position_salon_FIX_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_salon_FIX_down
-      - lambda: |-
-          id(eeprom_storage).update_position(1, 0.0);
-          id(roleta_position_salon_FIX_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_salon_FIX_up
       - switch.turn_off: relay_salon_FIX_down
       - lambda: |-
-          float current_position = id(cover_salon_FIX).position;
-          id(eeprom_storage).update_position(1, current_position);
-          id(roleta_position_salon_FIX_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_salon_FIX).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 1;
+          ESP_LOGD("cover_save", "Roleta salon FIX zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false
   - platform: time_based
     name: Roleta salon od sąsiada
     id: cover_salon_od_sasiada
     open_action:
       - switch.turn_on: relay_salon_od_sasiada_up
-      - lambda: |-
-          id(eeprom_storage).update_position(2, 1.0);
-          id(roleta_position_salon_od_sasiada_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_salon_od_sasiada_down
-      - lambda: |-
-          id(eeprom_storage).update_position(2, 0.0);
-          id(roleta_position_salon_od_sasiada_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_salon_od_sasiada_up
       - switch.turn_off: relay_salon_od_sasiada_down
       - lambda: |-
-          float current_position = id(cover_salon_od_sasiada).position;
-          id(eeprom_storage).update_position(2, current_position);
-          id(roleta_position_salon_od_sasiada_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_salon_od_sasiada).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 2;
+          ESP_LOGD("cover_save", "Roleta salon od sąsiada zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false
   - platform: time_based
     name: Roleta jadalnia
     id: cover_jadalnia
     open_action:
       - switch.turn_on: relay_jadalnia_up
-      - lambda: |-
-          id(eeprom_storage).update_position(3, 1.0);
-          id(roleta_position_jadalnia_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_jadalnia_down
-      - lambda: |-
-          id(eeprom_storage).update_position(3, 0.0);
-          id(roleta_position_jadalnia_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_jadalnia_up
       - switch.turn_off: relay_jadalnia_down
       - lambda: |-
-          float current_position = id(cover_jadalnia).position;
-          id(eeprom_storage).update_position(3, current_position);
-          id(roleta_position_jadalnia_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_jadalnia).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 3;
+          ESP_LOGD("cover_save", "Roleta jadalnia zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false
   - platform: time_based
     name: Roleta kuchnia wyjście na taras
     id: cover_kuchnia_wyjscie_na_taras
     open_action:
       - switch.turn_on: relay_kuchnia_wyjscie_na_taras_up
-      - lambda: |-
-          id(eeprom_storage).update_position(4, 1.0);
-          id(roleta_position_kuchnia_wyjscie_na_taras_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_kuchnia_wyjscie_na_taras_down
-      - lambda: |-
-          id(eeprom_storage).update_position(4, 0.0);
-          id(roleta_position_kuchnia_wyjscie_na_taras_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_kuchnia_wyjscie_na_taras_up
       - switch.turn_off: relay_kuchnia_wyjscie_na_taras_down
       - lambda: |-
-          float current_position = id(cover_kuchnia_wyjscie_na_taras).position;
-          id(eeprom_storage).update_position(4, current_position);
-          id(roleta_position_kuchnia_wyjscie_na_taras_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_kuchnia_wyjscie_na_taras).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 4;
+          ESP_LOGD("cover_save", "Roleta kuchnia wyjście na taras zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false
   - platform: time_based
     name: Roleta kuchnia okno
     id: cover_kuchnia_okno
     open_action:
       - switch.turn_on: relay_kuchnia_okno_up
-      - lambda: |-
-          id(eeprom_storage).update_position(5, 1.0);
-          id(roleta_position_kuchnia_okno_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_kuchnia_okno_down
-      - lambda: |-
-          id(eeprom_storage).update_position(5, 0.0);
-          id(roleta_position_kuchnia_okno_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_kuchnia_okno_up
       - switch.turn_off: relay_kuchnia_okno_down
       - lambda: |-
-          float current_position = id(cover_kuchnia_okno).position;
-          id(eeprom_storage).update_position(5, current_position);
-          id(roleta_position_kuchnia_okno_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_kuchnia_okno).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 5;
+          ESP_LOGD("cover_save", "Roleta kuchnia okno zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false
   - platform: time_based
     name: Roleta gabinet parter okno lewe
     id: cover_gabinet_parter_okno_lewe
     open_action:
       - switch.turn_on: relay_gabinet_parter_okno_lewe_up
-      - lambda: |-
-          id(eeprom_storage).update_position(6, 1.0);
-          id(roleta_position_gabinet_parter_okno_lewe_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_gabinet_parter_okno_lewe_down
-      - lambda: |-
-          id(eeprom_storage).update_position(6, 0.0);
-          id(roleta_position_gabinet_parter_okno_lewe_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_gabinet_parter_okno_lewe_up
       - switch.turn_off: relay_gabinet_parter_okno_lewe_down
       - lambda: |-
-          float current_position = id(cover_gabinet_parter_okno_lewe).position;
-          id(eeprom_storage).update_position(6, current_position);
-          id(roleta_position_gabinet_parter_okno_lewe_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_gabinet_parter_okno_lewe).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 6;
+          ESP_LOGD("cover_save", "Roleta gabinet parter okno lewe zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false
   - platform: time_based
     name: Roleta gabinet parter okno prawe
     id: cover_gabinet_parter_okno_prawe
     open_action:
       - switch.turn_on: relay_gabinet_parter_okno_prawe_up
-      - lambda: |-
-          id(eeprom_storage).update_position(7, 1.0);
-          id(roleta_position_gabinet_parter_okno_prawe_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_gabinet_parter_okno_prawe_down
-      - lambda: |-
-          id(eeprom_storage).update_position(7, 0.0);
-          id(roleta_position_gabinet_parter_okno_prawe_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_gabinet_parter_okno_prawe_up
       - switch.turn_off: relay_gabinet_parter_okno_prawe_down
       - lambda: |-
-          float current_position = id(cover_gabinet_parter_okno_prawe).position;
-          id(eeprom_storage).update_position(7, current_position);
-          id(roleta_position_gabinet_parter_okno_prawe_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_gabinet_parter_okno_prawe).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 7;
+          ESP_LOGD("cover_save", "Roleta gabinet parter okno prawe zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false
   - platform: time_based
     name: Roleta garaż
     id: cover_garaz
     open_action:
       - switch.turn_on: relay_garaz_up
-      - lambda: |-
-          id(eeprom_storage).update_position(8, 1.0);
-          id(roleta_position_garaz_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_garaz_down
-      - lambda: |-
-          id(eeprom_storage).update_position(8, 0.0);
-          id(roleta_position_garaz_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_garaz_up
       - switch.turn_off: relay_garaz_down
       - lambda: |-
-          float current_position = id(cover_garaz).position;
-          id(eeprom_storage).update_position(8, current_position);
-          id(roleta_position_garaz_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_garaz).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 8;
+          ESP_LOGD("cover_save", "Roleta garaż zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false
   - platform: time_based
     name: Roleta pokój od sąsiada
     id: cover_pokoj_od_sasiada
     open_action:
       - switch.turn_on: relay_pokoj_od_sasiada_up
-      - lambda: |-
-          id(eeprom_storage).update_position(9, 1.0);
-          id(roleta_position_pokoj_od_sasiada_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_pokoj_od_sasiada_down
-      - lambda: |-
-          id(eeprom_storage).update_position(9, 0.0);
-          id(roleta_position_pokoj_od_sasiada_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_pokoj_od_sasiada_up
       - switch.turn_off: relay_pokoj_od_sasiada_down
       - lambda: |-
-          float current_position = id(cover_pokoj_od_sasiada).position;
-          id(eeprom_storage).update_position(9, current_position);
-          id(roleta_position_pokoj_od_sasiada_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_pokoj_od_sasiada).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 9;
+          ESP_LOGD("cover_save", "Roleta pokój od sąsiada zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false
   - platform: time_based
     name: Roleta kacperek okno lewe
     id: cover_kacperek_okno_lewe
     open_action:
       - switch.turn_on: relay_kacperek_okno_lewe_up
-      - lambda: |-
-          id(eeprom_storage).update_position(10, 1.0);
-          id(roleta_position_kacperek_okno_lewe_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_kacperek_okno_lewe_down
-      - lambda: |-
-          id(eeprom_storage).update_position(10, 0.0);
-          id(roleta_position_kacperek_okno_lewe_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_kacperek_okno_lewe_up
       - switch.turn_off: relay_kacperek_okno_lewe_down
       - lambda: |-
-          float current_position = id(cover_kacperek_okno_lewe).position;
-          id(eeprom_storage).update_position(10, current_position);
-          id(roleta_position_kacperek_okno_lewe_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_kacperek_okno_lewe).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 10;
+          ESP_LOGD("cover_save", "Roleta kacperek okno lewe zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false
   - platform: time_based
     name: Roleta kacperek okno prawe
     id: cover_kacperek_okno_prawe
     open_action:
       - switch.turn_on: relay_kacperek_okno_prawe_up
-      - lambda: |-
-          id(eeprom_storage).update_position(11, 1.0);
-          id(roleta_position_kacperek_okno_prawe_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_kacperek_okno_prawe_down
-      - lambda: |-
-          id(eeprom_storage).update_position(11, 0.0);
-          id(roleta_position_kacperek_okno_prawe_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_kacperek_okno_prawe_up
       - switch.turn_off: relay_kacperek_okno_prawe_down
       - lambda: |-
-          float current_position = id(cover_kacperek_okno_prawe).position;
-          id(eeprom_storage).update_position(11, current_position);
-          id(roleta_position_kacperek_okno_prawe_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_kacperek_okno_prawe).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 11;
+          ESP_LOGD("cover_save", "Roleta kacperek okno prawe zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false
   - platform: time_based
     name: Roleta sypialnia prawa
     id: cover_sypialnia_prawa
     open_action:
       - switch.turn_on: relay_sypialnia_prawa_up
-      - lambda: |-
-          id(eeprom_storage).update_position(12, 1.0);
-          id(roleta_position_sypialnia_prawa_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_sypialnia_prawa_down
-      - lambda: |-
-          id(eeprom_storage).update_position(12, 0.0);
-          id(roleta_position_sypialnia_prawa_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_sypialnia_prawa_up
       - switch.turn_off: relay_sypialnia_prawa_down
       - lambda: |-
-          float current_position = id(cover_sypialnia_prawa).position;
-          id(eeprom_storage).update_position(12, current_position);
-          id(roleta_position_sypialnia_prawa_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_sypialnia_prawa).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 12;
+          ESP_LOGD("cover_save", "Roleta sypialnia prawa zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false
   - platform: time_based
     name: Roleta sypialnia lewa
     id: cover_sypialnia_lewa
     open_action:
       - switch.turn_on: relay_sypialnia_lewa_up
-      - lambda: |-
-          id(eeprom_storage).update_position(13, 1.0);
-          id(roleta_position_sypialnia_lewa_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_sypialnia_lewa_down
-      - lambda: |-
-          id(eeprom_storage).update_position(13, 0.0);
-          id(roleta_position_sypialnia_lewa_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_sypialnia_lewa_up
       - switch.turn_off: relay_sypialnia_lewa_down
       - lambda: |-
-          float current_position = id(cover_sypialnia_lewa).position;
-          id(eeprom_storage).update_position(13, current_position);
-          id(roleta_position_sypialnia_lewa_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_sypialnia_lewa).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 13;
+          ESP_LOGD("cover_save", "Roleta sypialnia lewa zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false
   - platform: time_based
     name: Roleta garderoba sypialnia
     id: cover_garderoba_sypialnia
     open_action:
       - switch.turn_on: relay_garderoba_sypialnia_up
-      - lambda: |-
-          id(eeprom_storage).update_position(14, 1.0);
-          id(roleta_position_garderoba_sypialnia_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_garderoba_sypialnia_down
-      - lambda: |-
-          id(eeprom_storage).update_position(14, 0.0);
-          id(roleta_position_garderoba_sypialnia_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_garderoba_sypialnia_up
       - switch.turn_off: relay_garderoba_sypialnia_down
       - lambda: |-
-          float current_position = id(cover_garderoba_sypialnia).position;
-          id(eeprom_storage).update_position(14, current_position);
-          id(roleta_position_garderoba_sypialnia_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_garderoba_sypialnia).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 14;
+          ESP_LOGD("cover_save", "Roleta garderoba sypialnia zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false
   - platform: time_based
     name: Roleta korytarz
     id: cover_korytarz
     open_action:
       - switch.turn_on: relay_korytarz_up
-      - lambda: |-
-          id(eeprom_storage).update_position(15, 1.0);
-          id(roleta_position_korytarz_eeprom).publish_state(100.0);
     open_duration: 10s
     close_action:
       - switch.turn_on: relay_korytarz_down
-      - lambda: |-
-          id(eeprom_storage).update_position(15, 0.0);
-          id(roleta_position_korytarz_eeprom).publish_state(0.0);
     close_duration: 9s
     stop_action:
       - switch.turn_off: relay_korytarz_up
       - switch.turn_off: relay_korytarz_down
       - lambda: |-
-          float current_position = id(cover_korytarz).position;
-          id(eeprom_storage).update_position(15, current_position);
-          id(roleta_position_korytarz_eeprom).publish_state(current_position * 100.0);
+          // Pobierz pozycję jako float (0.0 - 1.0)
+          float current_pos_float = id(cover_korytarz).position;
+          // Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej
+          uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);
+          // Upewnij się, że wartość jest w zakresie 0-100
+          if (current_pos_int > 100) { current_pos_int = 100; }
+
+          uint16_t save_address = 15;
+          ESP_LOGD("cover_save", "Roleta korytarz zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...", current_pos_float, current_pos_int, save_address);
+
+          // Zapisz pojedynczy bajt (uint8_t) do EEPROM
+          if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {
+            ESP_LOGD("cover_save", "Zapisano pozycję (int %u) do EEPROM pod adresem %u.", current_pos_int, save_address);
+          } else {
+            ESP_LOGE("cover_save", "Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!", current_pos_int, save_address);
+          }
     assumed_state: false

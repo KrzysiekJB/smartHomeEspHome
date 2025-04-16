@@ -76,8 +76,8 @@ substitutions:
 esphome:
   name: krishomelight
   friendly_name: KrisHomeLight
-  libraries:
-    - EEPROM
+  # libraries:
+  #   - EEPROM
   # on_boot:
   #   priority: -100
   #   then:
@@ -123,12 +123,19 @@ i2c:
   frequency: 400kHz
   scan: true
 
-# Załadowanie biblioteki dla EEPROM AT24C256
+# --- Załączenie Custom Component ---
 external_components:
-  - source: my_components
-  
-at24c256_eeprom:
-  id: eeprom_storage
+  - source:
+      type: local # Lub 'git' jeśli umieścisz w repozytorium
+      path: my_components # Ścieżka do folderu nadrzędnego komponentu
+    components: [ at24c_eeprom ] # Nazwa komponentu (z namespace)
+
+# --- Konfiguracja Komponentu EEPROM ---
+component:
+  - platform: at24c_eeprom
+    id: eeprom_storage # ID do użycia w lambdach
+    address: 0x50      # Adres I2C układu AT24C256 (sprawdź zworki A0-A2, domyślnie często 0x50)
+                       # Adresy mogą być od 0x50 do 0x57
 
 # Definicja czcionek
 font:
@@ -168,12 +175,33 @@ text_sensor:
 
 sensor:
   # Import sensorów przechowujących pozycję rolety
-  !include includes/covers_eeprom.yaml
+  # !include includes/covers_eeprom.yaml
 
 switch:
   # Import przełączników
   !include includes/switches_blinds.yaml
 
 cover:
+  - platform: time_based
+    name: Roleta salon taras
+    id: cover_salon_taras
+    open_action:
+      - switch.turn_on: relay_salon_taras_up
+    open_duration: 10s
+    close_action:
+      - switch.turn_on: relay_salon_taras_down
+    close_duration: 9s
+    stop_action:
+      - switch.turn_off: relay_salon_taras_up
+      - switch.turn_off: relay_salon_taras_down
+      - lambda: |-
+          ESP_LOGD("main", "Cover stopped, saving position.");
+          float current_pos = id(cover_salon_taras).position;
+          // Zapisz pozycję (float) pod adresem 0 w EEPROM
+          // Drugi argument (0) to adres w pamięci EEPROM
+          id(eeprom_storage).write_float(0, current_pos);
+
+    # --- WAŻNE: Wyłącz stan assumed_state, bo będziemy go przywracać ---
+    assumed_state: false
   # Import rolet
   # !include includes/covers.yaml

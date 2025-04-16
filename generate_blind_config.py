@@ -107,41 +107,16 @@ def generate_eeprom_sensor(blinds):
 
     return yaml_config
 
-# # Metoda generuje konfigurację covers.yaml i prezentuje w HA jako encje rolet
-# def generate_covers_yaml(blinds):
-#     yaml_config = []  # Główna sekcja YAML dla rolet
-
-#     for index, blind in enumerate(blinds, start=1):
-#         cover_config = {
-#             'platform': 'time_based',
-#             'name': f"Roleta {blind['name']}",
-#             'id': f"cover_{blind['id']}",
-#             'open_action': [
-#                 {'switch.turn_on': f"relay_{blind['id']}_up"},
-#                 {'lambda': f"|- id(eeprom_storage).update_position({index - 1}, 1.0); id(roleta_position_eeprom).publish_state(100.0);"}
-#             ],
-#             'open_duration': f"{blind['timeUp']}s",
-#             'close_action': [
-#                 {'switch.turn_on': f"relay_{blind['id']}_down"},
-#                 {'lambda': f"|- id(eeprom_storage).update_position({index - 1}, 0.0); id(roleta_position_eeprom).publish_state(0.0);"}
-#             ],
-#             'close_duration': f"{blind['timeDown']}s",
-#             'stop_action': [
-#                 {'switch.turn_off': f"relay_{blind['id']}_up"},
-#                 {'switch.turn_off': f"relay_{blind['id']}_down"},
-#                 {'lambda': f"|- float current_position = id(cover_{blind['id']}).position; id(eeprom_storage).update_position({index - 1}, current_position); id(roleta_position_eeprom).publish_state(current_position * 100.0);"}
-#             ],
-#             'assumed_state': False
-#         }
-#         yaml_config.append(cover_config)
-
-#     return yaml_config
-
 def generate_covers_yaml(blinds):
     yaml_config = []
 
-    for index, blind in enumerate(blinds, start=1):
+    # Zakładamy, że float zajmuje 4 bajty, int zajmuje 1 bajt
+    bytes_per_position = 1
+
+    for index, blind in enumerate(blinds):
         cover_id = f"cover_{blind['id']}"
+        # Oblicz unikalny adres dla każdej rolety
+        save_address = index * bytes_per_position
 
         open_lambda = LiteralScalarString(
             f"id(eeprom_storage).update_position({index - 1}, 1.0);\n"
@@ -151,24 +126,55 @@ def generate_covers_yaml(blinds):
             f"id(eeprom_storage).update_position({index - 1}, 0.0);\n"
             f"id(roleta_position_{blind['id']}_eeprom).publish_state(0.0);"
         )
-        stop_lambda = LiteralScalarString(
-            f"float current_position = id({cover_id}).position;\n"
-            f"id(eeprom_storage).update_position({index - 1}, current_position);\n"
-            f"id(roleta_position_{blind['id']}_eeprom).publish_state(current_position * 100.0);"
-        )
 
+        # Przykład dla float
+        # stop_lambda = LiteralScalarString(
+        #     f"float current_pos = id({cover_id}).position;\n"
+        #     f"uint16_t save_address = {save_address};\n"
+        #     f"ESP_LOGD(\"cover_save\", \"Roleta {blind['name']} zatrzymana. Pozycja: %.2f. Zapis do EEPROM (addr %u)...\", current_pos, save_address);\n"
+        #     f"if (id(eeprom_storage).write_float(save_address, current_pos)) {{\n"  # Zwróć uwagę na {{
+        #     f"  ESP_LOGD(\"cover_save\", \"Zapisano pozycję %.2f do EEPROM pod adresem %u.\", current_pos, save_address);\n" # Zwróć uwagę na ręczne wcięcie "  " i \"
+        #     # f"  // Opcjonalna linia...\n" # Dodawanie komentarzy też wymagałoby osobnej linii f-string
+        #     f"}} else {{\n" # Zwróć uwagę na }} i {{
+        #     f"  ESP_LOGE(\"cover_save\", \"Błąd zapisu pozycji do EEPROM pod adresem %u!\", save_address);\n" # Ręczne wcięcie i \"
+        #     f"}}" # Zwróć uwagę na }}
+        # )
+
+        # Zapis w INT
+        # ---- Generowanie stop_lambda w żądanym (mniej czytelnym) stylu ----
+        stop_lambda = LiteralScalarString(
+            f"// Pobierz pozycję jako float (0.0 - 1.0)\n"
+            f"float current_pos_float = id({cover_id}).position;\n"
+            f"// Przekonwertuj na procent (0-100) i zaokrąglij do najbliższej liczby całkowitej\n"
+            f"uint8_t current_pos_int = (uint8_t)round(current_pos_float * 100.0);\n"
+            f"// Upewnij się, że wartość jest w zakresie 0-100\n"
+            f"if (current_pos_int > 100) {{ current_pos_int = 100; }}\n" # Użycie {{ }} dla literałów { }
+            f"\n" # Pusta linia dla czytelności w C++ (opcjonalnie)
+            f"uint16_t save_address = {save_address};\n"
+            f"ESP_LOGD(\"cover_save\", \"Roleta {blind['name']} zatrzymana. Pozycja: %.2f (int: %u). Zapis do EEPROM (addr %u)...\", current_pos_float, current_pos_int, save_address);\n" # Użycie \" dla cudzysłowów
+            f"\n" # Pusta linia
+            f"// Zapisz pojedynczy bajt (uint8_t) do EEPROM\n"
+            f"if (id(eeprom_storage).write_byte(save_address, current_pos_int)) {{\n" # Użycie {{
+            f"  ESP_LOGD(\"cover_save\", \"Zapisano pozycję (int %u) do EEPROM pod adresem %u.\", current_pos_int, save_address);\n" # Ręczne wcięcie "  " i \"
+            # Opcjonalne publikowanie stanu - wymagałoby kolejnej linii f-string z wcięciem
+            # f"  // id(roleta_position_{blind['id']}_eeprom).publish_state(current_pos_float * 100.0);\n"
+            f"}} else {{\n" # Użycie }} i {{
+            f"  ESP_LOGE(\"cover_save\", \"Błąd zapisu pozycji (int %u) do EEPROM pod adresem %u!\", current_pos_int, save_address);\n" # Ręczne wcięcie "  " i \"
+            f"}}" # Użycie }} na końcu, bez \n
+        )
+        
         cover_config = {
             'platform': 'time_based',
             'name': f"Roleta {blind['name']}",
             'id': cover_id,
             'open_action': [
-                {'switch.turn_on': f"relay_{blind['id']}_up"},
-                {'lambda': open_lambda}
+                {'switch.turn_on': f"relay_{blind['id']}_up"}
+                # {'lambda': open_lambda}
             ],
             'open_duration': f"{blind['timeUp']}s",
             'close_action': [
-                {'switch.turn_on': f"relay_{blind['id']}_down"},
-                {'lambda': close_lambda}
+                {'switch.turn_on': f"relay_{blind['id']}_down"}
+                #{'lambda': close_lambda}
             ],
             'close_duration': f"{blind['timeDown']}s",
             'stop_action': [
